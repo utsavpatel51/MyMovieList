@@ -1,0 +1,36 @@
+.card{
+    width: 18rem;
+    float:left;
+    margin:0.5rem
+}
+
+.card-body{
+    max-height: 15rem;
+    word-break: break-all;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow:ellipsis
+}
+
+#show_img{
+    float: left;
+}
+
+#show_summary, #show_genres{
+    margin-left: 15rem ;
+}
+
+#show_rating, #show_status{
+    margin-left: 15rem;
+}
+#clear{
+    clear: both;
+}
+.img-fluid {
+    max-width: 95%;
+    height: auto;
+}
+.casts{
+    margin-left: 25%;
+    margin-top: 5%;
+}

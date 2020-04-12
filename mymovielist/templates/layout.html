@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css')}}">
+        <script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
+        {{ JSGlue.include() }}
+        {% if title %}
+            <title>Home Page -{{title}}</title>
+        {% else %}
+            <title>Home Page</title>
+        {% endif %}
+    </head>
+    <body>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <a class="navbar-brand" href="#">My Movie List</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item active">
+                        <a class="nav-link" href="{{ url_for('home') }}">Home <span class="sr-only">(current)</span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('about') }}">About</a>
+                    </li>
+                </ul>
+                &nbsp;&nbsp;
+                <form class="form-inline my-2 my-lg-0" method="POST" action="">
+                    {{ search_form.hidden_tag()}}
+                    {{ search_form.search_ip(class="form-control mr-sm-2",placeholder="Search") }}
+                    {{ search_form.submit(class="btn btn-outline-info")}}
+                </form>
+                <div class="navbar-nav ml-auto">
+                    {% if not current_user.is_authenticated %}
+                        <a class="nav-item nav-link" href="{{ url_for('login') }}">Login</a>
+                        <a class="nav-item nav-link" href="{{ url_for('register')}}">Register</a>
+                    {% else %}
+                        <a class="nav-item nav-link" href="{{ url_for('logout') }}">Logout</a>
+                    {% endif %}
+                </div>
+                
+            </div>
+        </nav>
+        <div class="container">
+            {% with mes = get_flashed_messages(with_categories=true)%}
+                {% if mes%}
+                    {% for category,message in mes %}
+                        <div class="alert alert-{{category}} mt-3 col-sm-8" style="margin-left:2% ;">{{message}}</div>
+                    {% endfor %}
+                {% endif %}
+            {%endwith%}
+            {% block content %}
+
+            {% endblock content %}
+        </div>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+        <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+
+    </body>
+</html>

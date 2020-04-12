@@ -1,0 +1,41 @@
+{% extends "layout.html" %}
+    {% block content %}
+    {% for show in shows %}
+        {% set show_name = show['name'] %}
+        {% set show_link = show['_links']['self']['href'] %}
+        {% set show_id = show['id']%}
+        {% set show_image = show['image']['medium'] %}
+        {% set show_summary = clear_html(show['summary']) %}
+        {% set show_rating = show['rating']['average']%}
+        <div class="card">
+            {% if show_image %}
+                <img src="{{show_image}}" class="card-img-top" style="height: 450px;">
+            {% else %}
+                <img src="{{ url_for('static',filename='noposter.jpg') }}" class="card-img-top" style="height: 450px;">
+            {% endif %}
+            <div class="card-body">
+                
+                <h5 class="card-title"><a href="{{ url_for('search_show', id_=show_id) }}" class="card-link">{{show_name}}</a></h5>
+                <p class="card-text"></p>{{show_summary}}</p>
+                {% if show_rating %}
+                    <span class="fa fa-star checked"> {{show_rating}}</span>
+                {% else %}
+                <span class="fa fa-star unchecked">Not Available</span>
+                {% endif %}
+            </div>
+        </div>
+    {% endfor %}
+    {% if flag %}
+        <div style="clear: both;">
+        <nav aria-label="Page navigation example">
+            <ul class="pagination">
+                <li class="page-item"><a class="page-link" href="{{ func_prev() }}">Previous</a></li>
+                {% for page in range(1, page_no) %}
+                    <li class="page-item"><a class="page-link" href="{{ url_for('home',page=page) }}">{{ page }}</a></li>
+                {% endfor %}
+                <li class="page-item"><a class="page-link" href="{{ func_next() }}">Next</a></li>
+            </ul>
+        </nav>
+        </div>
+    {% endif %}
+{% endblock content %}

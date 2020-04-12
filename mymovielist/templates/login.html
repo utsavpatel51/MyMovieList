@@ -1,0 +1,65 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="container pt-5">
+
+    <form method="POST" action="">
+        {{ form.hidden_tag()}}
+
+        <div class="form-group row">
+            {{ form.email.label(class="col-sm-2 col-form-label") }}
+            {% if form.email.errors %}
+                <div class="col-sm-6">
+                    {{ form.email(class="form-control is-invalid",placeholder="Email") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.email.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                </div>  
+            {% else %}
+            <div class="col-sm-6">
+                {{ form.email(class="form-control",placeholder="Email") }}
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="form-group row">
+            {{ form.password.label(class="col-sm-2 col-form-label") }}
+            {% if form.password.errors %}
+                <div class="col-sm-6">
+                    {{ form.password(class="form-control is-invalid",placeholder="Password") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.password.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                </div>  
+            {% else %}
+            <div class="col-sm-6">
+                {{ form.password(class="form-control",placeholder="Password") }}
+            </div>
+            {% endif %}
+        </div>
+        <div>
+            <div class="custom-control custom-checkbox">
+                {{ form.remember(class="custom-control-input")}}
+                {{ form.remember.label(class="custom-control-label")}}    
+            </div>
+        </div>
+        <div class="form-group row pt-3">
+            <div>
+                {{ form.submit(class="btn btn-outline-info")}}
+            </div>
+            <div class="pl-3 pt-1">
+            <small class="text-muted">
+                <a href="#">Forgot Password?</a>
+            </small></div>
+        </div>
+    </form>
+</div>
+<div class="border-top pt-3">
+    <small class="text-muted">
+        Need An Account? <a class="ml-2" href="{{ url_for('register')}}">Sign Up Now</a>
+    </small>
+</div>
+{% endblock content %}

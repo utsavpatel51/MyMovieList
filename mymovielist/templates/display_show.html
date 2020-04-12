@@ -1,0 +1,180 @@
+{% extends "layout.html" %}
+{% block content %}
+<div id="FlashMes" style="margin-left:2% ;"></div>
+<div class="container">
+    <nav class="navbar navbar-light bg-light d-flex justify-content-center">
+        <h3 class="mt-2">{{ data['name'] }}</h3>
+    </nav>
+    <div class="container-fluid mt-2">
+        <div id="show_img">
+            <div style="float: none;">
+                {% if data['image']['medium'] %}
+                    <img src="{{ data['image']['medium']}}" alt="{{ data['name'] }}" id="poster">
+                    {% if plan_to_watch_l and data['id'] in plan_to_watch_l %}
+                        <button class="btn btn-secondary" style="width: 60%; float: left;" disabled>In Plan To Watch</button>
+                    {% elif completed_l and data['id'] in completed_l %}
+                        <button class="btn btn-success" style="width: 60%; float: left;" disabled>Completed</button>
+                    {% elif dropped_l and data['id'] in dropped_l %}
+                        <button class="btn btn-danger" style="width: 60%; float: left;" disabled>Dropped</button>
+                    {% elif watching_l and data['id'] in watching_l %}
+                        <button class="btn btn-info" style="width: 60%; float: left;" disabled>Watching</button>
+                    {% endif %}
+                {% else %}
+                    <img src="{{ url_for('static',filename='noposter.jpg') }}">
+                {% endif %}
+            </div>
+            <div class="dropdown" style="margin-top: 1%;clear: both;">
+                <button class="btn btn-primary dropdown-toggle" style="width: 60%;" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Add To List</button>
+                <div class="dropdown-menu" role="menu" aria-labelledby="dropdownMenuButton">
+                    {% if data['id'] in plan_to_watch_l %}
+                        <a class="dropdown-item" disabled><del>Plan to Watch</del></a>
+                    {% else %}
+                        <a class="dropdown-item" href="{{ url_for('plan_to_watch', movie_id=data['id']) }}">Plan To Watch</a>
+                    {% endif %}
+
+                    {% if data['id'] in completed_l %}
+                        <a class="dropdown-item disabled"><del>Completed</del></a>
+                    {% else %}
+                        <a class="dropdown-item" href="{{ url_for('completed', movie_id=data['id']) }}">Completed</a>
+                    {% endif %}
+
+                    {% if data['id'] in dropped_l %}
+                        <a class="dropdown-item disabled"><del>Dropped</del></a>
+                    {% else %}
+                        <a class="dropdown-item" href="{{ url_for('dropped', movie_id=data['id']) }}">Dropped</a>
+                    {% endif %}
+
+                    <a href="#Modal" class="dropdown-item">Watching</a>
+                </div>
+            </div>
+            <!-- Modal -->
+            <div id="Modal" class="modal fade" role="dialog">
+                <div class="modal-dialog">
+            <!-- Modal content-->
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title">Add Season Details</h4>
+                        </div>
+                        <div class="modal-body">
+                            <form>
+                                <div class="form-group">
+                                    <label for="season">Season</label>
+                                    <select class="form-control" id="season">
+                                        <option disabled selected>-</option>
+                                        {% for se in sea_epi.keys() %}
+                                            <option>{{ se }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="episode">Episode</label>
+                                    <select class="form-control" id="episode">
+                                    </select>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary">
+                                <a id="save-btn" style="text-decoration: none;color: white;" onclick="sendToWatch()">Save changes</a>
+                            </button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="show_summary">
+            <p class="text-justify">{{ clear_html(data['summary']) }} </p>
+        </div>
+        <div id="show_genres">
+            {% for genre in data['genres'] %}
+                <span class="badge badge-info">{{ genre }}</span>
+            {% endfor %}
+        </div>
+        <p></p>
+        <div id="show_rating">
+            <span class="fa fa-star checked">&nbsp;&nbsp;{{data['rating']['average']}}</span>
+        </div>
+        <p></p>
+        <div id="show_status">
+            <p class="text-success">{{ data['status'] }}</p>
+            <p class=""> Total Episodes <b>{{ episodes|length}}</b></p>
+        </div>
+        <div id="clear"></div>
+    </div>
+    <button type="button" class="btn btn-primary casts" data-toggle="modal" data-target="#CastsModel">
+        Casts
+    </button>
+    <div class="modal fade" id="CastsModel" tabindex="-1" role="dialog" aria-labelledby="CastsModelLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="CastsModelLabel">Casts</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                {% for cast in casts %}
+                    <div class="card" style="width: 40%; height: 30%; margin: 5%;">
+                        <img class="card-img-top img-fluid" src="{{ cast['person']['image']['medium'] }}" alt="Card image cap">
+                        <div class="card-body">
+                        <h4 class="card-title" style="font-size: medium;" data-toggle="tooltip" title="Name">{{ cast['person']['name'] }}</h4>
+                        <p class="card-text" data-toggle="tooltip" title="Character Name">{{ cast['character']['name'] }}</p>
+                        <p class="card-text"><small class="text-muted">Birthday {{ cast['person']['birthday'] }}</small></p>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $('a[href$="#Modal"]').on( "click", function() {
+        $('#Modal').modal('show');
+    });
+
+    var parsed = JSON.parse('{{sea_epi | tojson}}');
+    $("#season").change(function(){
+        $("#episode").empty();
+        var a = parseInt($('#season').find(":selected").text());
+        for (var s=1; s<=parsed[a]; s++){
+            $("#episode").append(new Option(s, s));
+        }
+    })
+
+    function sendToWatch(){
+        var id_ = {{ data['id'] }}
+        var movie = {
+            'movie_id': id_,
+            se: parseInt($('#season').find(":selected").text()),
+            ep: parseInt($('#episode').find(":selected").text())
+        };
+        $.ajax({
+            url: Flask.url_for('watching'),
+            type: "POST",
+            dataType: 'json',
+            data: JSON.stringify(movie),
+            contentType:"application/json; charset=UTF-8"
+        })
+        .done(function(data){
+            console.log("done")
+            console.log(data['mes'])
+            $("#FlashMes").addClass("alert alert-success mt-3 col-sm-8")
+            $("#FlashMes").html(data['mes'])
+            $('<button class="btn btn-info" style="width: 60%; float: left;" disabled>Watching</button>').insertAfter("#poster")
+        })
+        .fail(function(data){
+            console.log("fail")
+        })
+        $('#save-btn').attr('data-dismiss', 'modal');
+        $('#save-btn').removeAttr('onclick');
+        $('#save-btn')[0].click();
+    }
+</script>
+{% endblock content %}

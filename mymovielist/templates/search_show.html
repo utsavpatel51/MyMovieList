@@ -1,0 +1,28 @@
+{% extends "layout.html" %}
+    {% block content %}
+    {% for data in data_list %}
+        {% set show_name = data['show']['name'] %}
+        {% set show_link = data['show']['_links']['self']['href'] %}
+        {% set show_id = data['show']['id']%}
+        {% set show_image = data['show']['image']['medium'] %}
+        {% set show_summary = clear_html(data['show']['summary']) %}
+        {% set show_rating = data['show']['rating']['average']%}
+        <div class="card">
+            {% if show_image %}
+                <img src="{{show_image}}" class="card-img-top" style="height: 400px;">
+            {% else %}
+                <img src="{{ url_for('static',filename='noposter.jpg') }}" class="card-img-top" style="height: 400px;">
+            {% endif %}
+            <div class="card-body">
+                
+                <h5 class="card-title"><a href="{{ url_for('search_show', id_=show_id) }}" class="card-link">{{show_name}}</a></h5>
+                <p class="card-text"></p>{{show_summary}}</p>
+                {% if show_rating %}
+                    <span class="fa fa-star checked"> {{show_rating}}</span>
+                {% else %}
+                <span class="fa fa-star unchecked">Not Available</span>
+                {% endif %}
+            </div>
+        </div>
+    {% endfor %}
+{% endblock content %}
