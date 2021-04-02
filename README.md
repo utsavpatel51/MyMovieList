@@ -1,5 +1,5 @@
 # MyMovieList
-Flask Application where you can track watching list of Web-Series. I have made this application to learn more things about Flask.
+Flask Application where you can track watching list of Web-Series. I decided to made this application to learn more things about Flask.
 
 <p>Home page</p>
 <img src="img/Screenshot (20).png"></img>
